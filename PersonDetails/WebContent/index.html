@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="en">
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Vertical (basic) form</h2>
+        <form id="empForm" method="post">
+            <div class="form-group">
+                <span><label for="perName">Person Name:</label> <label id="empIdMsg">
+                    </label></span>
+                <input type="text" class="form-control" name="perName" id="perName" placeholder="Enter Person Name"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="perEmail">Person Email:</label>
+                <input type="email" class="form-control" id="perEmail" placeholder="Enter Person Email" name="perEmail">
+            </div>
+            <div class="form-group">
+                <label for="perAdd">Person Address:</label>
+                <input type="text" class="form-control" id="perAdd" placeholder="Enter Person Address"
+                    name="perAdd">
+            </div>
+            <input type="button" class="btn btn-primary" id="perSave" value="Save" onclick="savePerson();">
+        </form>
+    </div>
+    <script>
+        $("#perName").focus();
+        function validateAndGetFormData() {
+            var perNameVar = $("#perName").val();
+            if (perNameVar === "") {
+                alert("Person Name Required Value");
+                $("#perName").focus();
+                return "";
+            }
+            var perEmailVar = $("#perEmail").val();
+            if (perEmailVar === "") {
+                alert("Person Email is Required Value");
+                $("#perEmail").focus();
+                return "";
+            }
+            var perAddVar = $("#perAdd").val();
+            if (perAddVar === "") {
+                alert("Person Address is Required Value");
+                $("#perAdd").focus();
+                return "";
+            }
+            var jsonStrObj = {
+                perName: perNameVar,
+                perEmail: perEmailVar,
+                perAdd: perAddVar,
+            };
+            return JSON.stringify(jsonStrObj);
+        }
+        
+        
+       
+        function resetForm() {
+            $("#perName").val("")
+            $("#perEmail").val("");
+            $("#perAdd").val("");
+            $("#perName").focus();
+        }
+        function savePerson() {
+            var jsonStr = validateAndGetFormData();
+            if (jsonStr === "") {
+                return;
+            }
+            var putReqStr = createPUTRequest("90936224|-31948852610378981|90943616",
+                jsonStr, "Persons", "Person-rel");
+            alert(putReqStr);
+            jQuery.ajaxSetup({ async: false });
+            var resultObj = executeCommandAtGivenBaseUrl(putReqStr,
+                "http://api.login2explore.com:5577", "/api/iml");
+            alert(JSON.stringify(resultObj));
+            jQuery.ajaxSetup({ async: true });
+            resetForm();
+        }
+    </script>
+</body>
+
+</html>
